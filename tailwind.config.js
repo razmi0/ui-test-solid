@@ -1,6 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/components/*.tsx","./src/tailwind" ,"./src/*.tsx", "./src/components/ui/*.tsx", "./src/components/ui/**/*.tsx"],
+  content: [
+    "./src/components/*.tsx",
+    "./src/tailwind",
+    "./src/*.tsx",
+    "./src/components/ui/*.tsx",
+    "./src/components/ui/**/*.tsx",
+    "./src/components/**/*.tsx",
+  ],
   theme: {
     extend: {
       colors: {
@@ -52,7 +59,7 @@ export default {
     },
     ({ addVariant, e, postcss }) => {
       addVariant("hover", ({ container, separator }) => {
-        const hoverRule = postcss.atRule({ "name": "media", params: "(hover: hover)" });
+        const hoverRule = postcss.atRule({ name: "media", params: "(hover: hover)" });
         hoverRule.append(container.nodes);
         container.append(hoverRule);
         hoverRule.walkRules((rule) => {

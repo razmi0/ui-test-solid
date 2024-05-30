@@ -1,4 +1,4 @@
-import { CircleX } from "lucide-solid";
+import { CircleX, FileCode2 } from "lucide-solid";
 import { ComponentProps, JSX, VoidComponent } from "solid-js";
 import Buttons from "../ui/Buttons/Button";
 
@@ -7,55 +7,69 @@ export const PreButtons: VoidComponent<PreButtonsProps> = (props) => {
   return (
     <>
       <pre
-        style={{ padding: "20px" }}
-        classList={(props.classList, { ["text-sm max-h-56 overflow-y-scroll selection:bg-darkblue-300"]: true })}>
-        {`
-    import type { ComponentProps, ParentComponent } from "solid-js";
-    import { mergeProps } from "solid-js";
-    
-    const Root: ParentComponent = (props) => {
-      return <>{props.children}</>;
-    };
-    
-    interface ButtonGroupProps extends ComponentProps<"div"> {}
-    const ButtonGroup: ParentComponent<ButtonGroupProps> = (props) => {
-      return (
-        <div
-          classList={mergeProps(props.classList, {
-            ["space-x-3"]: true,
-          })}>
-          {props.children}
-        </div>
-      );
-    };
-    
-    interface ButtonProps extends ComponentProps<"button"> {}
-    const Button: ParentComponent<ButtonProps> = (props) => {
-      return (
-        <button
-          {...props}
-          class=""
-          classList={mergeProps(props.classList, {
-            ["px-4 py-2 text-neutral-200 rounded-md card bg-cyan-900"]: true,
-            ["active:bg-cyan-800"]: true,
-            ["hover:bg-cyan-950 hover:text-neutral-300"]: true,
-            ["focus:outline-offset-2 focus:outline-cyan-900"]: true,
-            ["transition-all"]: true,
-          })}>
-          {props.children}
-        </button>
-      );
-    };
-    
-    const Buttons = {
-      Root,
-      Button,
-      ButtonGroup,
-    };
-    
-    export default Buttons;
-    
-    `}
+        classList={
+          (props.classList,
+          { ["py-3 ps-16 pe-5 text-sm max-h-[75vh] overflow-y-scroll selection:bg-darkblue-300"]: true })
+        }>
+        {`import { twMerge } from "tailwind-merge";
+import type { ComponentProps, ParentComponent } from "solid-js";
+import { mergeProps } from "solid-js";
+
+const Root: ParentComponent = (props) => {
+  return <>{props.children}</>;
+};
+
+interface ButtonGroupProps extends ComponentProps<"div"> {}
+const ButtonGroup: ParentComponent<ButtonGroupProps> = (props) => {
+  return (
+    <div
+      classList={mergeProps(props.classList, {
+        ["space-x-3"]: true,
+      })}>
+      {props.children}
+    </div>
+  );
+};
+
+type VariantType = "outline" | "solid";
+interface ButtonProps extends ComponentProps<"button"> {
+  variant?: VariantType;
+}
+const variants = {
+  solid: "bg-cyan-900 hover:bg-cyan-950 card",
+  outline: "hover:bg-cyan-300/20 hover:text-neutral-300 card border border-cyan-900",
+  cl: function (variant: VariantType = "solid") {
+    return this[variant];
+  },
+};
+
+const Button: ParentComponent<ButtonProps> = (props) => {
+  return (
+    <button
+      {...props}
+      classList={props.classList}
+      class={twMerge(
+        "px-4 py-2 text-neutral-200 rounded-md w-fit",
+        "active:bg-cyan-800",
+        "hover:text-neutral-300",
+        "focus:outline-offset-2 focus:outline-cyan-900",
+        "transition-all",
+        variants.cl(props.variant),
+        props.class
+      )}>
+      {props.children}
+    </button>
+  );
+};
+
+const Buttons = {
+  Root,
+  Button,
+  ButtonGroup,
+};
+
+export default Buttons;
+`}
       </pre>
     </>
   );
@@ -76,17 +90,15 @@ const Dialog = (props: { type: "buttons" & string }) => {
 
   return (
     <>
-      <Buttons.Button classList={{ ["w-fit"]: true }} variant={"outline"} onClick={open}>
-        Code
+      <Buttons.Button class="w-fit h-fit p-1 hover:text-neutral-50 translate-y-1" variant={"outline"} onClick={open}>
+        <FileCode2 />
       </Buttons.Button>
-      {props.type === "buttons" && (
-        <dialog class="mt-14 relative">
-          <button onClick={close} class="group absolute top-0 right-0 mr-2 mt-2">
-            <CircleX class="text-cyan-700 group-hover:animate-pulse " />
-          </button>
-          <PreButtons />
-        </dialog>
-      )}
+      <dialog class="mt-14 bg-darkblue-500 card text-neutral-100 backdrop-blur-sm">
+        <button onClick={close} class="group absolute left-1 top-1">
+          <CircleX class="text-rose-800  group-hover:animate-pulse" />
+        </button>
+        {props.type === "buttons" && <PreButtons />}
+      </dialog>
     </>
   );
 };
