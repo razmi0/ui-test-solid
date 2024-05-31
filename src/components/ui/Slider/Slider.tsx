@@ -11,7 +11,7 @@ import { twMerge } from "tailwind-merge";
 
 interface SliderProps extends ComponentProps<"div"> {}
 const Slider: VoidComponent<SliderProps> = (props) => {
-  const position = useSliderPosition()?.position;
+  const { position } = useSliderPosition();
 
   return (
     <div
@@ -30,25 +30,22 @@ const Slider: VoidComponent<SliderProps> = (props) => {
   );
 };
 
+type PositionType = { left: number; top: number; width: number; height: number };
+const initialPosition: PositionType = { left: 0, top: 0, width: 0, height: 0 };
 type SliderContextType = {
-  position: Accessor<{ left: number; top: number; width: number; height: number }>;
+  position: Accessor<PositionType>;
   updatePosition: (e: MouseEvent) => void | (() => void);
 };
 
 const initialContext: SliderContextType = {
-  position: () => ({ left: 0, top: 0, width: 0, height: 0 }),
+  position: () => initialPosition,
   updatePosition: () => {
     console.log("No context mounted");
   },
 };
 export const SliderPositionContext = createContext<SliderContextType>(initialContext);
-export const SliderPositionProvider: ParentComponent = (props) => {
-  const [position, setPosition] = createSignal({
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 0,
-  });
+export const SliderPositionProvider: ParentComponent<{ initial?: PositionType }> = (props) => {
+  const [position, setPosition] = createSignal(props.initial || initialPosition);
 
   const updatePosition = (e: MouseEvent) => {
     const element = e.currentTarget as HTMLElement;
