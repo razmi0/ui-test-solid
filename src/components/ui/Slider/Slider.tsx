@@ -26,7 +26,7 @@ const Slider: VoidComponent<SliderProps> = (props) => {
         props.class
       )}
       classList={props.classList}
-      data-slider="true"></div>
+      data-is="slider"></div>
   );
 };
 
