@@ -2,10 +2,6 @@ import { type ComponentProps, type ParentComponent } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { SliderPositionProvider, useSliderPosition } from "../Slider/Slider";
 
-interface ButtonElementInterface extends HTMLButtonElement {
-  dataset: { button: "button"; active: "false" | "true"; index: string };
-}
-
 interface ButtonGroupProps extends ComponentProps<"div"> {}
 const ButtonGroup: ParentComponent<ButtonGroupProps> = (props) => {
   return (

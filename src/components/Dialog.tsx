@@ -11,23 +11,18 @@ export const PreButtons: VoidComponent<PreButtonsProps> = (props) => {
           (props.classList,
           { ["py-3 ps-16 pe-5 text-sm max-h-[75vh] overflow-y-scroll selection:bg-darkblue-300"]: true })
         }>
-        {`import { twMerge } from "tailwind-merge";
-import type { ComponentProps, ParentComponent } from "solid-js";
-import { mergeProps } from "solid-js";
-
-const Root: ParentComponent = (props) => {
-  return <>{props.children}</>;
-};
+        {`import { type ComponentProps, type ParentComponent } from "solid-js";
+import { twMerge } from "tailwind-merge";
+import { SliderPositionProvider, useSliderPosition } from "../Slider/Slider";
 
 interface ButtonGroupProps extends ComponentProps<"div"> {}
 const ButtonGroup: ParentComponent<ButtonGroupProps> = (props) => {
   return (
-    <div
-      classList={mergeProps(props.classList, {
-        ["space-x-3"]: true,
-      })}>
-      {props.children}
-    </div>
+    <SliderPositionProvider>
+      <div data-button="group" classList={props.classList} class={twMerge("relative space-x-3")}>
+        {props.children}
+      </div>
+    </SliderPositionProvider>
   );
 };
 
@@ -44,15 +39,24 @@ const variants = {
 };
 
 const Button: ParentComponent<ButtonProps> = (props) => {
+  const { updatePosition } = useSliderPosition();
+
+  const handleClick = (e: MouseEvent & { currentTarget: HTMLButtonElement; target: Element }) => {
+    updatePosition(e);
+    typeof props.onClick === "function" && props.onClick(e);
+  };
+
   return (
     <button
       {...props}
+      onClick={handleClick}
+      data-button="button"
       classList={props.classList}
       class={twMerge(
         "px-4 py-2 text-neutral-200 rounded-md w-fit",
         "active:bg-cyan-800",
         "hover:text-neutral-300",
-        "focus:outline-offset-2 focus:outline-cyan-900",
+        "focus:bg-cyan-800 focus:outline-none",
         "transition-all",
         variants.cl(props.variant),
         props.class
@@ -62,13 +66,7 @@ const Button: ParentComponent<ButtonProps> = (props) => {
   );
 };
 
-const Buttons = {
-  Root,
-  Button,
-  ButtonGroup,
-};
-
-export default Buttons;
+export { Button, ButtonGroup };
 `}
       </pre>
     </>
