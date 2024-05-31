@@ -1,5 +1,6 @@
-import Dialog from "./Code/Pre";
-import Buttons from "./ui/Buttons/Button";
+import Dialog from "./Dialog";
+import { Button, ButtonGroup } from "./ui/Buttons/Button";
+import Slider from "./ui/Slider/Slider";
 
 const DemoButtons = () => {
   return (
@@ -8,18 +9,15 @@ const DemoButtons = () => {
         <h1>Some buttons </h1>
         <Dialog type="buttons" />
       </div>
-      <Buttons.ButtonGroup>
-        <Buttons.Button variant="solid">Button 1</Buttons.Button>
-        <Buttons.Button variant="solid">Button 2</Buttons.Button>
-        <Buttons.Button variant="solid">Button 3</Buttons.Button>
-        <Buttons.Button variant="solid">Button 4</Buttons.Button>
-      </Buttons.ButtonGroup>
+      <ButtonGroup>
+        <Slider />
+        <Button variant="solid">Button 1</Button>
+        <Button variant="solid">Button 2</Button>
+        <Button variant="solid">Button 3</Button>
+        <Button variant="solid">Button 4</Button>
+      </ButtonGroup>
     </>
   );
 };
 
-const Demo = {
-  Buttons: DemoButtons,
-};
-
-export default Demo;
+export default DemoButtons;

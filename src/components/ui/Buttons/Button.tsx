@@ -1,20 +1,40 @@
+import { useContext, type ComponentProps, type ParentComponent } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { ComponentProps, ParentComponent } from "solid-js";
-import { mergeProps } from "solid-js";
+import { SliderPositionContext, SliderPositionProvider } from "../Slider/Slider";
 
-const Root: ParentComponent = (props) => {
-  return <>{props.children}</>;
+interface ButtonElementInterface extends HTMLButtonElement {
+  dataset: { button: "button"; active: "false" | "true"; index: string };
+}
+
+// ResolvedJSXElement sanitization functions
+// --
+
+const validButton = (element?: unknown): element is ButtonElementInterface => {
+  const valid = element instanceof HTMLButtonElement && element.dataset.button === "button";
+  !valid && console.warn("Element is not a Button : ", element);
+  return valid;
 };
+
+// --
 
 interface ButtonGroupProps extends ComponentProps<"div"> {}
 const ButtonGroup: ParentComponent<ButtonGroupProps> = (props) => {
+  // const resolved = children(() => props.children)
+  //   .toArray()
+  //   .map((child, index) => {
+  //     validButton(child) && (child.dataset.index = index.toString());
+  //     return child;
+  //   });
   return (
-    <div
-      classList={mergeProps(props.classList, {
-        ["space-x-3"]: true,
-      })}>
-      {props.children}
-    </div>
+    <SliderPositionProvider>
+      <div
+        data-button="group"
+        // data-length={resolved.length}
+        classList={props.classList}
+        class={twMerge("relative space-x-3")}>
+        {props.children}
+      </div>
+    </SliderPositionProvider>
   );
 };
 
@@ -31,15 +51,25 @@ const variants = {
 };
 
 const Button: ParentComponent<ButtonProps> = (props) => {
+  const updatePosition = useContext(SliderPositionContext)?.updatePosition;
+
+  const handleClick = (e: MouseEvent & { currentTarget: HTMLButtonElement; target: Element }) => {
+    updatePosition && updatePosition(e);
+    typeof props.onClick === "function" && props.onClick(e);
+  };
+
   return (
     <button
       {...props}
+      onClick={handleClick}
+      data-button="button"
+      data-index="0"
       classList={props.classList}
       class={twMerge(
         "px-4 py-2 text-neutral-200 rounded-md w-fit",
         "active:bg-cyan-800",
         "hover:text-neutral-300",
-        "focus:outline-offset-2 focus:outline-cyan-900",
+        "focus:bg-cyan-800 focus:outline-none",
         "transition-all",
         variants.cl(props.variant),
         props.class
@@ -49,10 +79,4 @@ const Button: ParentComponent<ButtonProps> = (props) => {
   );
 };
 
-const Buttons = {
-  Root,
-  Button,
-  ButtonGroup,
-};
-
-export default Buttons;
+export { Button, ButtonGroup };

@@ -1,6 +1,6 @@
 import { CircleX, FileCode2 } from "lucide-solid";
 import { ComponentProps, JSX, VoidComponent } from "solid-js";
-import Buttons from "../ui/Buttons/Button";
+import { Button } from "./ui/Buttons/Button";
 
 interface PreButtonsProps extends ComponentProps<"pre"> {}
 export const PreButtons: VoidComponent<PreButtonsProps> = (props) => {
@@ -90,9 +90,9 @@ const Dialog = (props: { type: "buttons" & string }) => {
 
   return (
     <>
-      <Buttons.Button class="w-fit h-fit p-1 hover:text-neutral-50 translate-y-1" variant={"outline"} onClick={open}>
+      <Button class="w-fit h-fit p-1 hover:text-neutral-50 translate-y-1" variant={"outline"} onClick={open}>
         <FileCode2 />
-      </Buttons.Button>
+      </Button>
       <dialog class="mt-14 bg-darkblue-500 card text-neutral-100 backdrop-blur-sm">
         <button onClick={close} class="group absolute left-1 top-1">
           <CircleX class="text-rose-800  group-hover:animate-pulse" />
